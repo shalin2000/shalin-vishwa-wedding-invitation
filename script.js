@@ -1,3 +1,15 @@
+// A mobile browser may restore the previous hash target when the page is
+// refreshed. Treat a refresh like a fresh visit and start at the top instead.
+const navigationEntry = performance.getEntriesByType('navigation')[0];
+if (navigationEntry?.type === 'reload') {
+  history.replaceState(null, '', `${location.pathname}${location.search}`);
+  document.documentElement.style.scrollBehavior = 'auto';
+  window.scrollTo(0, 0);
+  requestAnimationFrame(() => {
+    document.documentElement.style.removeProperty('scroll-behavior');
+  });
+}
+
 const modal = document.querySelector('#modal');
 const play = document.querySelector('#play');
 const close = document.querySelector('#close');
